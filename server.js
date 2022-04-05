@@ -15,6 +15,7 @@ const app = express();
 
 // Allow to use body parser (e.g. req.body.blah)
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 if (process.env.NODE_ENV === "development") {
   app.use(morgan("dev"));
@@ -22,10 +23,12 @@ if (process.env.NODE_ENV === "development") {
 
 app.use("/api/v1/transactions", transactions);
 
+const __dirname = path.resolve();
+
 if (process.env.NODE_ENV === "production") {
-  app.use(express.static("client/build"));
+  app.use(express.static(path.join(__dirname, "/client/build")));
   app.get("*", (req, res) =>
-    res.sendFile(path.resolve(__dirname, "client", "build", "index.html"))
+    res.sendFile(path.join(__dirname, "/client/build/index.html"))
   );
 }
 
